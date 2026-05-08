@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Targeted Outcomes Analysis Request — Progyny × Capital Rx</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --progyny-teal:   #00827F;
+      --progyny-light:  #E6F4F4;
+      --progyny-dark:   #005F5D;
+      --accent:         #F26522;
+      --gray-100:       #F7F8FA;
+      --gray-200:       #EAECF0;
+      --gray-400:       #9AA1AF;
+      --gray-700:       #374151;
+      --gray-900:       #111827;
+      --radius:         10px;
+      --shadow:         0 2px 12px rgba(0,0,0,.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-900);
+      line-height: 1.6;
+      padding: 32px 16px 64px;
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    .page-header {
+      max-width: 780px;
+      margin: 0 auto 36px;
+      text-align: center;
+    }
+    .page-header .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .brand-pill {
+      background: var(--progyny-teal);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .05em;
+      padding: 5px 14px;
+      border-radius: 999px;
+    }
+    .brand-divider { color: var(--gray-400); font-size: 18px; }
+    .brand-pill.capital { background: var(--gray-700); }
+    .page-header h1 {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 700;
+      color: var(--progyny-dark);
+      margin-bottom: 10px;
+    }
+    .page-header p {
+      font-size: 15px;
+      color: var(--gray-700);
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    /* ── Form card ───────────────────────────────────── */
+    form {
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: var(--progyny-teal);
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .card-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .card-header .program-label {
+      font-size: 12px;
+      opacity: .75;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .card-header.optional { background: var(--gray-700); }
+
+    .card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Field groups ────────────────────────────────── */
+    .field-row {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 560px) {
+      .field-row.col2 { grid-template-columns: 1fr 1fr; }
+      .field-row.col3 { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+    label .req { color: var(--accent); margin-left: 2px; }
+    label .hint {
+      display: block;
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 2px;
+    }
+    label .source-badge {
+      display: inline-block;
+      background: var(--progyny-light);
+      color: var(--progyny-dark);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 13px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 7px;
+      font-size: 14px;
+      color: var(--gray-900);
+      background: #fff;
+      transition: border-color .15s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--progyny-teal);
+      box-shadow: 0 0 0 3px rgba(0,130,127,.12);
+    }
+    textarea { resize: vertical; min-height: 90px; }
+    input[type="file"] {
+      font-size: 13px;
+      color: var(--gray-700);
+    }
+
+    .radio-group, .checkbox-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .radio-group label, .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .plan-block {
+      background: var(--gray-100);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .plan-block h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--progyny-dark);
+      margin-bottom: 2px;
+    }
+
+    .info-banner {
+      background: var(--progyny-light);
+      border-left: 4px solid var(--progyny-teal);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--progyny-dark);
+    }
+    .info-banner strong { display: block; margin-bottom: 3px; }
+
+    /* ── Submit area ─────────────────────────────────── */
+    .submit-area {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .submit-area .field { flex: 1; }
+
+    .btn-submit {
+      align-self: flex-start;
+      background: var(--progyny-teal);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .btn-submit:hover  { background: var(--progyny-dark); }
+    .btn-submit:active { transform: scale(.98); }
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 8px;
+    }
+    .footer-note a { color: var(--progyny-teal); }
+
+    /* ── Success overlay ─────────────────────────────── */
+    #success-msg {
+      display: none;
+      max-width: 780px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px 32px;
+      text-align: center;
+    }
+    #success-msg .icon { font-size: 48px; margin-bottom: 16px; }
+    #success-msg h2 { color: var(--progyny-dark); margin-bottom: 10px; }
+    #success-msg p  { color: var(--gray-700); font-size: 15px; }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="brand">
+    <span class="brand-pill">Progyny</span>
+    <span class="brand-divider">&times;</span>
+    <span class="brand-pill capital">Capital Rx</span>
+  </div>
+  <h1>Targeted Outcomes Analysis Request</h1>
+  <p>
+    Complete the fields below so Progyny can run a GeoAccess report and a
+    Targeted Outcomes Analysis (TOA) for your client. Fields marked
+    <span style="color:var(--accent);font-weight:700;">*</span> are required.
+    Leave optional program sections blank if not applicable.
+  </p>
+</header>
+
+<form id="toa-form" novalidate>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 1 — Submitter Contact
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Submitter Information</h2>
+    </div>
+    <div class="card-body">
+      <div class="field-row col2">
+        <div class="field">
+          <label for="submitter-name">Your Name <span class="req">*</span></label>
+          <input type="text" id="submitter-name" name="submitter_name" required placeholder="Jane Smith" />
+        </div>
+        <div class="field">
+          <label for="submitter-email">Your Email <span class="req">*</span></label>
+          <input type="email" id="submitter-email" name="submitter_email" required placeholder="jane.smith@capitalrx.com" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 2 — Fertility & Family Building (REQUIRED)
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Fertility &amp; Family Building</h2>
+      <span class="program-label">Progyny Program</span>
+    </div>
+    <div class="card-body">
+
+      <!-- Employer basics -->
+      <div class="field-row col2">
+        <div class="field">
+          <label for="employer-name">
+            Employer Name <span class="req">*</span>
+            <span class="source-badge">Capital Rx</span>
+            <span class="hint">Legal name of the client employer.</span>
+          </label>
+          <input type="text" id="employer-name" name="employer_name" required placeholder="e.g. ABC Company" />
+        </div>
+        <div class="field">
+          <label for="employer-industry">
+            Employer Industry <span class="req">*</span>
+            <span class="source-badge">Capital Rx</span>
+          </label>
+          <input type="text" id="employer-industry" name="employer_industry" required placeholder="e.g. Education" />
+        </div>
+      </div>
+
+      <!-- Enrollment numbers -->
+      <div class="field-row col3">
+        <div class="field">
+          <label for="enrolled-employees">
+            Enrolled Employees <span class="req">*</span>
+            <span class="source-badge">Capital Rx</span>
+            <span class="hint">Enrolled in medical or pharmacy plan.</span>
+          </label>
+          <input type="number" id="enrolled-employees" name="enrolled_employees" required min="0" placeholder="e.g. 2100" />
+        </div>
+        <div class="field">
+          <label for="enrolled-spouses">
+            Enrolled Spouses / Domestic Partners <span class="req">*</span>
+            <span class="source-badge">Capital Rx</span>
+          </label>
+          <input type="number" id="enrolled-spouses" name="enrolled_spouses" required min="0" placeholder="e.g. 600" />
+        </div>
+        <div class="field">
+          <label for="avg-age">
+            Avg Age of Medically Enrolled Employees <span class="req">*</span>
+            <span class="source-badge">Capital Rx</span>
+          </label>
+          <input type="number" id="avg-age" name="avg_age_employees" required min="18" max="70" placeholder="e.g. 32" />
+        </div>
+      </div>
+
+      <!-- Medical health plan -->
+      <div class="plan-block">
+        <h3>Medical Health Plan Information <span class="source-badge" style="margin-left:0">Capital Rx</span></h3>
+        <p style="font-size:13px;color:var(--gray-400);margin-top:-8px;">
+          Member deductible, co-insurance, out-of-pocket max, and copays. Add a row per plan if multiple plans exist, or attach the SPD below.
+        </p>
+
+        <div class="field-row col2">
+          <div class="field">
+            <label for="plan-deductible">Deductible</label>
+            <input type="text" id="plan-deductible" name="plan_deductible" placeholder="e.g. $1,500" />
+          </div>
+          <div class="field">
+            <label for="plan-oop">Out-of-Pocket Maximum</label>
+            <input type="text" id="plan-oop" name="plan_oop_max" placeholder="e.g. $3,000" />
+          </div>
+        </div>
+        <div class="field-row col2">
+          <div class="field">
+            <label for="plan-coinsurance">Co-Insurance</label>
+            <input type="text" id="plan-coinsurance" name="plan_coinsurance" placeholder="e.g. 20%" />
+          </div>
+          <div class="field">
+            <label for="plan-copays">Copays</label>
+            <input type="text" id="plan-copays" name="plan_copays" placeholder="e.g. N/A or $30 PCP" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="plan-enrollment-breakdown">
+            Enrollment per Plan
+            <span class="hint">Number or % of employees in each plan (e.g. "Cigna PPO: 2,000 / Cigna HSA: 100").</span>
+          </label>
+          <textarea id="plan-enrollment-breakdown" name="plan_enrollment_breakdown" rows="3" placeholder="Cigna PPO: 2,000&#10;Cigna HSA: 100"></textarea>
+        </div>
+        <div class="field">
+          <label for="spd-upload">
+            Upload SPD (in lieu of plan details above)
+            <span class="hint">PDF, DOCX, or XLSX. Do not include PHI.</span>
+          </label>
+          <input type="file" id="spd-upload" name="spd_file" accept=".pdf,.doc,.docx,.xls,.xlsx" />
+        </div>
+      </div>
+
+      <!-- Current fertility benefits -->
+      <div class="plan-block">
+        <h3>Current Fertility Benefits <span class="source-badge" style="margin-left:0">Capital Rx</span></h3>
+
+        <div class="field">
+          <label>Does the client have a dollar cap maximum or cycle maximum for medical &amp; Rx? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="fertility_cap_type" value="dollar_cap" required /> Dollar Cap Maximum</label>
+            <label><input type="radio" name="fertility_cap_type" value="cycle_max" /> Cycle Maximum</label>
+            <label><input type="radio" name="fertility_cap_type" value="both" /> Both</label>
+            <label><input type="radio" name="fertility_cap_type" value="none" /> No current benefit</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fertility-cap-detail">
+            Benefit Detail
+            <span class="hint">Describe the cap/cycle limit (e.g. "$10K combined Medical &amp; Rx" or "3 IUI lifetime").</span>
+          </label>
+          <input type="text" id="fertility-cap-detail" name="fertility_cap_detail" placeholder="e.g. $10,000 combined Medical & Rx benefit" />
+        </div>
+
+        <div class="field">
+          <label>Does the client offer coverage for elective egg freezing? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label><input type="radio" name="egg_freezing" value="yes" required /> Yes</label>
+            <label><input type="radio" name="egg_freezing" value="no" /> No</label>
+            <label><input type="radio" name="egg_freezing" value="unknown" /> Unknown</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="unique-utilizers">
+            Number of Unique Utilizers (if available)
+            <span class="hint">Leave blank or enter "Unknown" if not available.</span>
+          </label>
+          <input type="text" id="unique-utilizers" name="unique_utilizers" placeholder="e.g. 24 or Unknown" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 3 — Progyny Assistance Services (Optional)
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header optional">
+      <h2>Progyny Assistance Services</h2>
+      <span class="program-label">Optional Program</span>
+    </div>
+    <div class="card-body">
+      <div class="info-banner">
+        <strong>About this program</strong>
+        Progyny can administer existing adoption, surrogacy, travel, or doula reimbursement benefits,
+        or provide benchmark information to help define new benefits. Leave blank if not applicable.
+      </div>
+
+      <div class="field">
+        <label for="assistance-existing">
+          Existing Reimbursement Benefits
+          <span class="source-badge">Client / Consultant</span>
+          <span class="hint">If offered, provide the per-event or lifetime limit (e.g. "$10,000 Adoption per Lifetime").</span>
+        </label>
+        <textarea id="assistance-existing" name="assistance_existing" placeholder="$10,000 Adoption per Lifetime&#10;$10,000 Surrogacy per Lifetime"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Milk Shipping — interested in a cost estimate?
+          <span class="source-badge">Client / Consultant</span>
+        </label>
+        <div class="radio-group">
+          <label><input type="radio" name="milk_shipping" value="yes" /> Yes</label>
+          <label><input type="radio" name="milk_shipping" value="no" /> No</label>
+        </div>
+      </div>
+
+      <div id="milk-shipping-details" style="display:none;" class="field-row col2">
+        <div class="field">
+          <label for="milk-eligible-females">
+            Number of Eligible Female Employees
+            <span class="source-badge">Client / Consultant</span>
+          </label>
+          <input type="number" id="milk-eligible-females" name="milk_eligible_females" min="0" placeholder="e.g. 300" />
+        </div>
+        <div class="field">
+          <label for="milk-trips-per-employee">
+            Estimated Trips per Employee per Year
+            <span class="source-badge">Client / Consultant</span>
+          </label>
+          <input type="number" id="milk-trips-per-employee" name="milk_trips_per_year" min="0" placeholder="e.g. 4" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="assistance-new-interest">
+          Interest in New Benefits via Progyny
+          <span class="source-badge">Client / Consultant</span>
+          <span class="hint">If the client doesn't currently offer these benefits, describe interest level.</span>
+        </label>
+        <textarea id="assistance-new-interest" name="assistance_new_interest" rows="3" placeholder="e.g. Interested in learning how Progyny can administer our current benefit."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 4 — Pregnancy & Postpartum (Optional)
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header optional">
+      <h2>Pregnancy &amp; Postpartum</h2>
+      <span class="program-label">Optional Program</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label for="live-births">
+          Number of Live Births (most recent 12-month reporting period)
+          <span class="source-badge">Capital Rx / Client / Consultant</span>
+        </label>
+        <input type="number" id="live-births" name="live_births_12mo" min="0" placeholder="e.g. 14" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 5 — Parent & Child Wellbeing (Optional)
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header optional">
+      <h2>Parent &amp; Child Wellbeing</h2>
+      <span class="program-label">Optional Program</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label for="employees-with-children">
+          Enrolled Employees with Children Ages 12 and Under
+          <span class="source-badge">Capital Rx</span>
+        </label>
+        <input type="number" id="employees-with-children" name="employees_with_children" min="0" placeholder="e.g. 400" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 6 — Menopause (Optional)
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header optional">
+      <h2>Menopause</h2>
+      <span class="program-label">Optional Program</span>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label for="female-members-40-60">
+          Medically Enrolled Female Members Ages 40–60
+          <span class="source-badge">Capital Rx</span>
+          <span class="hint">Enrolled employees + spouse/domestic partner.</span>
+        </label>
+        <input type="number" id="female-members-40-60" name="female_members_40_60" min="0" placeholder="e.g. 700" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SECTION 7 — GeoAccess Report (Optional)
+  ════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-header optional">
+      <h2>GeoAccess Report</h2>
+      <span class="program-label">Optional — Network Accessibility Analysis</span>
+    </div>
+    <div class="card-body">
+      <div class="info-banner">
+        <strong>How it works</strong>
+        Progyny maps employee zip codes to in-network providers to show network accessibility.
+        Upload a census file with zip codes only — do <strong>not</strong> include PHI.
+      </div>
+      <div class="field">
+        <label>Interested in a GeoAccess Report?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="geoaccess_interest" value="yes" /> Yes</label>
+          <label><input type="radio" name="geoaccess_interest" value="no" /> No</label>
+        </div>
+      </div>
+      <div id="geoaccess-upload-area" style="display:none;" class="field">
+        <label for="census-file">
+          Census File (zip codes only, no PHI)
+          <span class="source-badge">Capital Rx</span>
+          <span class="hint">CSV or XLSX containing medically enrolled employee zip codes.</span>
+        </label>
+        <input type="file" id="census-file" name="census_file" accept=".csv,.xls,.xlsx" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       SUBMIT
+  ════════════════════════════════════════════════════ -->
+  <div class="submit-area">
+    <div class="field">
+      <label for="additional-notes">Additional Notes / Questions</label>
+      <textarea id="additional-notes" name="additional_notes" rows="3" placeholder="Any additional context for the Progyny team..."></textarea>
+    </div>
+    <button type="submit" class="btn-submit">Submit TOA Request</button>
+    <p class="footer-note">
+      Questions? Contact <a href="mailto:CapitalRx@progyny.com">CapitalRx@progyny.com</a>
+    </p>
+  </div>
+
+</form>
+
+<!-- Success message (shown after submit) -->
+<div id="success-msg">
+  <div class="icon">✅</div>
+  <h2>Request Submitted Successfully</h2>
+  <p>
+    Your Targeted Outcomes Analysis request has been sent to the Progyny Partnership Team.
+    You should receive a confirmation at the email address you provided.
+    <br /><br />
+    Questions? Email <a href="mailto:CapitalRx@progyny.com">CapitalRx@progyny.com</a>.
+  </p>
+</div>
+
+<script>
+  /* ── Toggle milk shipping detail fields ─────────────── */
+  document.querySelectorAll('input[name="milk_shipping"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.getElementById('milk-shipping-details').style.display =
+        radio.value === 'yes' ? 'grid' : 'none';
+    });
+  });
+
+  /* ── Toggle GeoAccess upload ────────────────────────── */
+  document.querySelectorAll('input[name="geoaccess_interest"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.getElementById('geoaccess-upload-area').style.display =
+        radio.value === 'yes' ? 'block' : 'none';
+    });
+  });
+
+  /* ── Form submission → mailto ────────────────────────── */
+  document.getElementById('toa-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    /* Basic required-field validation */
+    const requiredFields = this.querySelectorAll('[required]');
+    let valid = true;
+    requiredFields.forEach(field => {
+      field.style.borderColor = '';
+      if (field.type === 'radio') return; // handled below
+      if (!field.value.trim()) {
+        field.style.borderColor = 'var(--accent)';
+        valid = false;
+      }
+    });
+
+    /* Radio groups */
+    const radioGroups = ['fertility_cap_type', 'egg_freezing'];
+    radioGroups.forEach(name => {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      const firstRadio = document.querySelector(`input[name="${name}"]`);
+      if (!checked && firstRadio) {
+        firstRadio.closest('.radio-group').style.outline = '2px solid var(--accent)';
+        firstRadio.closest('.radio-group').style.borderRadius = '4px';
+        valid = false;
+      } else if (firstRadio) {
+        firstRadio.closest('.radio-group').style.outline = '';
+      }
+    });
+
+    if (!valid) {
+      alert('Please fill in all required fields (highlighted in orange).');
+      return;
+    }
+
+    /* Build email body */
+    const fd = new FormData(this);
+    const get = key => fd.get(key) || '—';
+
+    const capitalRxSection = `
+SUBMITTER
+---------
+Name:  ${get('submitter_name')}
+Email: ${get('submitter_email')}
+
+FERTILITY & FAMILY BUILDING
+----------------------------
+Employer Name:            ${get('employer_name')}
+Employer Industry:        ${get('employer_industry')}
+Enrolled Employees:       ${get('enrolled_employees')}
+Enrolled Spouses/DPs:     ${get('enrolled_spouses')}
+Avg Age of Employees:     ${get('avg_age_employees')}
+
+Medical Plan Details:
+  Deductible:             ${get('plan_deductible')}
+  Out-of-Pocket Max:      ${get('plan_oop_max')}
+  Co-Insurance:           ${get('plan_coinsurance')}
+  Copays:                 ${get('plan_copays')}
+  Enrollment Breakdown:
+${(get('plan_enrollment_breakdown')).split('\n').map(l => '    ' + l).join('\n')}
+
+Current Fertility Benefit:
+  Cap Type:               ${get('fertility_cap_type')}
+  Benefit Detail:         ${get('fertility_cap_detail')}
+  Elective Egg Freezing:  ${get('egg_freezing')}
+  Unique Utilizers:       ${get('unique_utilizers')}
+
+PROGYNY ASSISTANCE SERVICES
+----------------------------
+Existing Reimbursements:  ${get('assistance_existing')}
+Milk Shipping Interest:   ${get('milk_shipping')}
+Eligible Female Emps:     ${get('milk_eligible_females')}
+Trips/Employee/Year:      ${get('milk_trips_per_year')}
+New Benefit Interest:     ${get('assistance_new_interest')}
+
+PREGNANCY & POSTPARTUM
+-----------------------
+Live Births (12mo):       ${get('live_births_12mo')}
+
+PARENT & CHILD WELLBEING
+--------------------------
+Employees w/ Children ≤12: ${get('employees_with_children')}
+
+MENOPAUSE
+---------
+Female Members Ages 40–60: ${get('female_members_40_60')}
+
+GEOACCESS REPORT
+----------------
+Interested:               ${get('geoaccess_interest')}
+(Census file attached if provided)
+
+ADDITIONAL NOTES
+----------------
+${get('additional_notes')}
+    `.trim();
+
+    const subject = encodeURIComponent(
+      `TOA Request — ${get('employer_name')} (via Capital Rx)`
+    );
+    const body = encodeURIComponent(capitalRxSection);
+    const mailto = `mailto:CapitalRx@progyny.com?subject=${subject}&body=${body}`;
+
+    /* Open email client */
+    window.location.href = mailto;
+
+    /* Show success banner */
+    document.getElementById('toa-form').style.display = 'none';
+    document.getElementById('success-msg').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
